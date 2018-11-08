@@ -1,0 +1,394 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// $Id: B1DetectorConstruction.cc 94307 2015-11-11 13:42:46Z gcosmo $
+//
+/// \file B1DetectorConstruction.cc
+/// \brief Implementation of the B1DetectorConstruction class
+
+#include "B1DetectorConstruction.hh"
+
+#include "G4RunManager.hh"
+#include "G4NistManager.hh"
+#include "G4Box.hh"
+#include "G4Cons.hh"
+#include "G4Orb.hh"
+#include "G4Tubs.hh"
+#include "G4Sphere.hh"
+#include "G4Trd.hh"
+#include "G4LogicalVolume.hh"
+#include "G4PVPlacement.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SubtractionSolid.hh"
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1DetectorConstruction::B1DetectorConstruction(G4int option)
+: G4VUserDetectorConstruction(),
+  fScoringVolume(0)
+{SetLayoutOptions(option); }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+B1DetectorConstruction::~B1DetectorConstruction()
+{ }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VPhysicalVolume* B1DetectorConstruction::Construct()
+{  
+  // Get nist material manager
+  G4NistManager* nist = G4NistManager::Instance();
+  
+  // Envelope parameters
+  //
+  G4double env_sizeXY = 1000*cm, env_sizeZ = 600*cm;
+  //G4Material* env_mat = nist->FindOrBuildMaterial("G4_WATER");
+   
+  // Option to switch on/off checking of volumes overlaps
+  //
+  G4bool checkOverlaps = true;
+
+
+/*  G4double density     = universe_mean_density;    //from PhysicalConstants.h
+  G4double pressure    = 3.e-18*pascal;
+  G4double temperature = 2.73*kelvin;
+  G4Material* Vacuum   = new G4Material("Vacuum",
+                                        1., 1.01*g/mole, density,
+                                        kStateGas,temperature,pressure); */
+  //     
+  // World
+  //
+  G4double world_sizeXY = 1.2*env_sizeXY;
+  G4double world_sizeZ  = 1.2*env_sizeZ;
+  G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
+  //G4Material* world_mat = Vacuum;
+
+  G4Box* solidWorld =    
+    new G4Box("World",                       //its name
+       0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);     //its size
+      
+  G4LogicalVolume* logicWorld =                         
+    new G4LogicalVolume(solidWorld,          //its solid
+                        world_mat,           //its material
+                        "World");            //its name
+                                   
+  G4VPhysicalVolume* physWorld = 
+    new G4PVPlacement(0,                     //no rotation
+                      G4ThreeVector(),       //at (0,0,0)
+                      logicWorld,            //its logical volume
+                      "World",               //its name
+                      0,                     //its mother  volume
+                      false,                 //no boolean operation
+                      0,                     //copy number
+                      checkOverlaps);        //overlaps checking
+                
+  G4Material* Water = nist->FindOrBuildMaterial("G4_WATER");
+  G4Material* Aluminum = nist->FindOrBuildMaterial("G4_Al");
+  G4Material* StainlessSteel = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+  G4Material* Cobalt = nist->FindOrBuildMaterial("G4_Co");
+  G4Material* Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
+  G4ThreeVector origin = G4ThreeVector(0.*cm, 0.*cm, 0.*cm);
+
+  //Pads around Co60
+  G4double innerRadiusPads = 0.6*cm;
+  G4double outerRadiusPads = 0.7*cm;
+  G4double hzPads = 17.5*cm;
+  G4double startAngle = 0.*deg;
+  G4double spanningAngle = 360.*deg; 
+  G4Tubs* padsSolid = new G4Tubs("Pads", innerRadiusPads, outerRadiusPads, hzPads, startAngle, spanningAngle);
+  G4LogicalVolume* padsLog = new G4LogicalVolume(padsSolid, StainlessSteel, "Pads");
+
+  //Cobalt fillings
+  G4double innerRadiusFillings = 0.*cm;
+  G4double outerRadiusFillings = 0.55*cm;
+  G4double hzFillings = 16.2*cm;
+  G4Tubs* fillingsSolid = new G4Tubs("Fillings", innerRadiusFillings, outerRadiusFillings, hzFillings, startAngle, spanningAngle);
+  G4LogicalVolume* fillingsLog = new G4LogicalVolume(fillingsSolid, Cobalt, "Fillings");
+
+  G4double radiusSource = 13.0*cm;  //Center of the Co60 source is at some radius from the radiation chamber, positions of pads and guides are on this radius
+
+  //Guide tubes for pads
+  G4double innerRadiusGuides = 1.*cm;
+  G4double outerRadiusGuides = 1.1*cm;
+  G4double hzGuides = 17.5*cm;
+  G4Tubs* guidesSolid = new G4Tubs("Guides", innerRadiusGuides, outerRadiusGuides, hzGuides, startAngle, spanningAngle);
+  G4LogicalVolume* guidesLog = new G4LogicalVolume(guidesSolid, StainlessSteel, "Guides");
+
+
+  double n_rods=24.;
+
+  for( int i = 0; i < n_rods; i+=1 ) {
+    double phi = 7.5+i*360./n_rods;
+    G4double x = radiusSource*cos( phi * M_PI / 180.0 );
+    G4double y = radiusSource*sin( phi * M_PI / 180.0 );
+    std::string padName="Pad"+std::to_string(phi);
+    std::string guideName="Guide" + std::to_string(phi);
+    std::string fillingName="Filing" + std::to_string(phi);
+    G4ThreeVector shieldingPos = G4ThreeVector(x, y, 0.*cm);
+    new G4PVPlacement(0,shieldingPos,padsLog,padName,logicWorld,false,0);
+    new G4PVPlacement(0,shieldingPos,guidesLog,guideName,logicWorld,false,0);
+    new G4PVPlacement(0,shieldingPos,fillingsLog,fillingName,logicWorld,false,0);
+    }
+
+
+  //Inner Casing
+  G4double innerRadiusInnerCasing = 11.0*cm;
+  G4double outerRadiusInnerCasing = 11.1*cm;
+  G4double hzInnerCasing = 17.5*cm;
+  G4Tubs* innerCasingSolid = new G4Tubs("InnerCasing", innerRadiusInnerCasing, outerRadiusInnerCasing, hzInnerCasing, startAngle, spanningAngle);
+  G4LogicalVolume* innerCasingLog = new G4LogicalVolume(innerCasingSolid, Aluminum, "InnerCasing");
+	new G4PVPlacement(0,origin,innerCasingLog,"InnerCasing",logicWorld,false,0);
+
+  G4double innerRadiusOuterCasing = 16.0*cm;
+  G4double outerRadiusOuterCasing = 16.1*cm;
+  G4double hzOuterCasing = 17.5*cm;
+  G4Tubs* outerCasingSolid = new G4Tubs("OuterCasing", innerRadiusOuterCasing, outerRadiusOuterCasing, hzOuterCasing, startAngle, spanningAngle);
+  G4LogicalVolume* outerCasingLog = new G4LogicalVolume(outerCasingSolid, Aluminum, "OuterCasing");
+  new G4PVPlacement(0,origin,outerCasingLog,"OuterCasing",logicWorld,false,0);
+
+  //Lid
+  G4double lidThickness     = 2.0*cm;
+  G4ThreeVector lidPos      = G4ThreeVector(0.,0.,hzOuterCasing+lidThickness/2.);
+  G4Tubs* lidSolid          = new G4Tubs("Lid",0.,outerRadiusOuterCasing,lidThickness/2.0,0.,360.);
+  G4LogicalVolume* lidLog   = new G4LogicalVolume(lidSolid,StainlessSteel,"Lid") ;
+  new G4PVPlacement(0,lidPos,lidLog,"Lid",logicWorld,false,0);
+
+  //Holder
+  G4double holderThickness   = 2.0*mm;
+  G4ThreeVector holderPos    = G4ThreeVector(0.,0.,-19.0*cm);
+  G4Tubs* holderSolid        = new G4Tubs("Holder",0.,innerRadiusInnerCasing,holderThickness/2.0,0.,360.);
+  G4LogicalVolume* holderLog = new G4LogicalVolume(holderSolid,StainlessSteel,"Holder") ;
+  new G4PVPlacement(0,holderPos,holderLog,"Holder",logicWorld,false,0);
+
+  //Walls
+  G4double wallsHx 			= 195.0*cm;
+  G4double wallsHy 			= 247.5*cm;
+  G4double wallsHz 			= 149.0*cm;
+  G4double wallsThickness 	= 50.0*cm;
+
+
+  G4VSolid *outerWalls = new G4Box("outerWalls",wallsHx+wallsThickness,wallsHy+wallsThickness,wallsHz+wallsThickness);  //50 cm is the thickness of the wall
+  G4VSolid *innerWalls = new G4Box("innerWalls",wallsHx,wallsHy,wallsHz);
+  G4VSolid *wallsSolid = new G4SubtractionSolid("walls", outerWalls, innerWalls);
+
+  //wallOpening
+  G4double wallOpeningLength   		= 100.*cm;
+  G4VSolid *wallOpening 			= new G4Box("wallOpening",30.0*cm,wallOpeningLength/2.0,wallsHz);
+  G4ThreeVector  wallOpeningPos 	= G4ThreeVector(220.0*cm, -(wallsHy-wallOpeningLength/2.0), 0*cm); //relative to the wallsPlacement
+  G4RotationMatrix identityRot		= G4RotationMatrix();
+  G4Transform3D openingTransform 	= G4Transform3D(identityRot,wallOpeningPos);  
+  G4VSolid *openWallsSolid 			= new G4SubtractionSolid("openWalls",wallsSolid,wallOpening,openingTransform);
+  G4LogicalVolume* wallsLogic 		= new G4LogicalVolume(openWallsSolid, Concrete, "openWalls");
+
+  G4ThreeVector wallsPlacement 		= G4ThreeVector(-85.0*cm, -107.5*cm, 77.0*cm);	//center of the source is (0,0,0)
+  new G4PVPlacement(0,wallsPlacement,wallsLogic,"openWalls",logicWorld,false,0);
+
+
+  //steel boards on the floor
+  G4double floorBoardThickness  	  = 3.0*mm;
+  G4ThreeVector floorBoardPos    	  = G4ThreeVector(wallsPlacement.x(),wallsPlacement.y(),wallsPlacement.z()-wallsHz+floorBoardThickness/2.0);  
+  G4VSolid *floorBoardSolid     	  = new G4Box("floorBoard",wallsHx,wallsHy,floorBoardThickness/2.0);
+  G4LogicalVolume* floorBoardLog  	  = new G4LogicalVolume(floorBoardSolid, StainlessSteel, "floorBoard");
+  new G4PVPlacement(0,floorBoardPos,floorBoardLog,"floorBoard",logicWorld,false,0,checkOverlaps);
+
+  //aluminum board on right wall (+x)
+  G4double  wallBoardThickness        = 2.0*mm;
+  G4double  rightWallBoardHeight      = 200*cm;
+  G4double  rightWallBoardLength      = 2*wallsHy-wallOpeningLength;
+  G4ThreeVector rightWallBoardPos     = G4ThreeVector(wallsPlacement.x()+wallsHx-wallBoardThickness/2.0,wallsPlacement.y()+(wallsHy-rightWallBoardLength/2.0),wallsPlacement.z()-(wallsHz-rightWallBoardHeight/2.0)+floorBoardThickness);
+  //This position places the bottom of the board on the floor which goes up to BoardHeight, but in the y direction goes from the back of the wall to the "hole (door)"
+  G4VSolid *rightWallBoardSolid       = new G4Box("rightWallBoard",wallBoardThickness/2.0,rightWallBoardLength/2.0,rightWallBoardHeight/2.0);
+  G4LogicalVolume* rightWallBoardLog  = new G4LogicalVolume(rightWallBoardSolid, Aluminum, "rightWallBoard");
+  new G4PVPlacement(0,rightWallBoardPos,rightWallBoardLog,"rightWallBoard",logicWorld,false,0,checkOverlaps);
+
+
+  //aluminum board on back wall (+y)
+  G4double   backWallBoardHeight      = 200*cm;
+  G4double   backWallBoardLength      = 150*cm;
+  G4ThreeVector backWallBoardPos      = G4ThreeVector(wallsPlacement.x()+(wallsHx-backWallBoardLength/2.0),wallsPlacement.y()+wallsHy-wallBoardThickness,wallsPlacement.z()-(wallsHz-backWallBoardHeight/2.0)+floorBoardThickness);
+   //This position places the bottom of the board on the floor which goes up to BoardHeight, but in the x direction goes from the right wall to the left by BoardLenght distance"
+  G4VSolid *backWallBoardSolid        = new G4Box("backWallBoard",backWallBoardLength/2.0,wallBoardThickness,backWallBoardHeight/2.0);
+  G4LogicalVolume* backWallBoardLog   = new G4LogicalVolume(backWallBoardSolid, Aluminum, "backWallBoard");
+  new G4PVPlacement(0,backWallBoardPos,backWallBoardLog,"backWallBoard",logicWorld,false,0,checkOverlaps);
+
+
+
+  G4VSolid* det_solid;
+  G4LogicalVolume* det_logic;
+
+
+G4ThreeVector outsidePlacement;
+
+  switch(LayoutOptions) { 
+    case 1:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -62.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-62)cm"
+      << G4endl;           
+        break;} 
+    case 2:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -52.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-52)cm"
+      << G4endl;           
+        break;}
+    case 3:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -42.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-42)cm"
+      << G4endl;           
+        break;}
+    case 4:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -32.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-32)cm"
+      << G4endl;           
+        break;}        
+    case 5:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -22.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-22)cm"
+      << G4endl;           
+        break;}
+    case 6:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -12.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-12)cm"
+      << G4endl;           
+        break;}
+    case 7:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, -2.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,-2)cm"
+      << G4endl;           
+        break;}
+    case 8:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 8.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,8)cm"
+      << G4endl;           
+        break;}
+    case 9:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 18.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,18)cm"
+      << G4endl;           
+        break;}
+    case 10:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 28.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,28)cm"
+      << G4endl;           
+        break;}
+    case 11:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 38.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,38)cm"
+      << G4endl;           
+        break;}
+    case 12:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 48.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,48)cm"
+      << G4endl;           
+        break;}
+    case 13:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 58.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,58)cm"
+      << G4endl;           
+        break;}
+    case 14:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 68.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,68)cm"
+      << G4endl;           
+        break;}
+    case 15:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 78.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,78)cm"
+      << G4endl;           
+        break;}
+    case 16:{ 
+    outsidePlacement = G4ThreeVector(-28.0*cm, -41.42*cm, 88.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28.0,-41.42,88)cm"
+      << G4endl;           
+        break;}
+    default:
+      outsidePlacement = G4ThreeVector(0.*cm, -126.*cm, 0.*cm);
+    }
+
+G4double orb_radius = 2*cm; 
+det_solid = new G4Orb("Orb", orb_radius); //full ball
+G4cout
+<< G4endl
+<< " Detector is a full water ball of radius 2cm"
+<< G4endl;
+det_logic = new G4LogicalVolume(det_solid,Water,"det");        
+
+new G4PVPlacement(0,                       //no rotation
+                outsidePlacement,                    //at position
+                det_logic,               //its logical volume
+                "det",                   //its name
+                logicWorld,              //its mother  volume
+                false,                   //no boolean operation
+                0,                       //copy number
+                checkOverlaps);          //overlaps checking
+
+  // Set det as scoring volume
+  //
+  fScoringVolume = det_logic;
+
+  //
+  //always return the physical World
+  //
+  return physWorld;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

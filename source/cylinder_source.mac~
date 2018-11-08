@@ -1,0 +1,15 @@
+/gps/position 0 0 0 cm
+
+/gps/pos/type Surface
+/gps/pos/shape Cylinder
+/gps/pos/radius 8.0 cm
+/gps/pos/inner_radius 7.99 cm
+/gps/pos/halfz 70. cm
+
+/gps/particle gamma
+/gps/ang/type iso
+
+/gps/ene/mono 1 MeV
+
+/run/initialize
+/run/beamOn 20
