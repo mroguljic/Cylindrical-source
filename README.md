@@ -29,3 +29,5 @@ If you wish to just look at the geometry, run
 ./Source
 ```
 
+![alt text](https://github.com/mroguljic/Cylindrical-source/blob/master/source/image.png)
+
