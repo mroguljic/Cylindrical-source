@@ -1,0 +1,5 @@
+executable  =  condor.csh
+universe    =  vanilla
+log         =  loop.log
+getenv      =  True
+queue
