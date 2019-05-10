@@ -57,6 +57,12 @@ G4VPhysicalVolume* SourceDetectorConstruction::Construct()
   G4Tubs* padsSolid             = new G4Tubs("Pads", innerRadiusPads, outerRadiusPads, hzPads, startAngle, spanningAngle);
   G4LogicalVolume* padsLog      = new G4LogicalVolume(padsSolid, StainlessSteel, "Pads");
 
+  //Vertical protection
+  G4double vProtRadius          = 10.*mm;
+  G4double vProthLength         = 20.*cm; //halflength
+  G4Tubs* vProtSolid            = new G4Tubs("vProt",0.,vProtRadius,vProthLength,startAngle,spanningAngle);
+  G4LogicalVolume* vProtLog     = new G4LogicalVolume(vProtSolid,StainlessSteel,"vProt");
+
   //Cobalt fillings
   G4double innerRadiusFillings  = 0.*cm;
   G4double outerRadiusFillings  = 0.55*cm;
@@ -80,17 +86,20 @@ G4VPhysicalVolume* SourceDetectorConstruction::Construct()
   //Placing the rods, pads and the sources
   //There is a better way to do it (without loops) - copies of G4PVP placement
   for( int i = 0; i < n_rods; i+=1 ) {
-    double phi = 7.5+i*360./n_rods;
-    G4double x = radiusSource*cos( phi * M_PI / 180.0 );
-    G4double y = radiusSource*sin( phi * M_PI / 180.0 );
-    std::string padName="Pad"+std::to_string(phi);
-    std::string guideName="Guide" + std::to_string(phi);
-    std::string fillingName="Filing" + std::to_string(phi);
-    G4ThreeVector guidesPos = G4ThreeVector(x, y, guidesZ);
+    double phi                = 7.5+i*360./n_rods;
+    G4double x                = radiusSource*cos( phi * M_PI / 180.0 );
+    G4double y                = radiusSource*sin( phi * M_PI / 180.0 );
+    std::string padName       ="Pad"+std::to_string(phi);
+    std::string guideName     ="Guide" + std::to_string(phi);
+    std::string fillingName   ="Filing" + std::to_string(phi);
+    std::string vProtName     ="vProt" + std::to_string(phi);
+    G4ThreeVector guidesPos   = G4ThreeVector(x, y, guidesZ);
     G4ThreeVector fillingsPos = G4ThreeVector(x, y, 0*cm);
+    G4ThreeVector vProtPos    = G4ThreeVector(x,y,hzFillings+vProthLength+1*mm);
     new G4PVPlacement(0,guidesPos,padsLog,padName,logicWorld,false,0);
     new G4PVPlacement(0,guidesPos,guidesLog,guideName,logicWorld,false,0);
-    new G4PVPlacement(0,guidesPos,fillingsLog,fillingName,logicWorld,false,0);
+    new G4PVPlacement(0,fillingsPos,fillingsLog,fillingName,logicWorld,false,0);
+    new G4PVPlacement(0,vProtPos,vProtLog,vProtName,logicWorld,false,0);
     }
 
 
