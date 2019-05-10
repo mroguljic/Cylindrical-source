@@ -45,6 +45,11 @@ set(Source_SCRIPTS
   init_vis.mac
   vis.mac
   generate_macros.py
+  merge.py
+  submit.py
+  error.py
+  generate.py
+  killJobs.py
   singleRun.mac
   totalDose.py
   configuration.txt
