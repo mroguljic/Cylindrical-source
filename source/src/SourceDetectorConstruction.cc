@@ -19,10 +19,10 @@
 
 
 
-SourceDetectorConstruction::SourceDetectorConstruction()
+SourceDetectorConstruction::SourceDetectorConstruction(G4int option)
 : G4VUserDetectorConstruction(),
   fScoringVolume(0)
-{ }
+{SetLayoutOptions(option);}
 
 
 SourceDetectorConstruction::~SourceDetectorConstruction()
@@ -184,13 +184,62 @@ G4VPhysicalVolume* SourceDetectorConstruction::Construct()
   new G4PVPlacement(0,backWallBoardPos,backWallBoardLog,"backWallBoard",logicWorld,false,0,checkOverlaps);
 
 
-  UserInput config;
-  G4ThreeVector setupPlacement       = config.GetSetupPlacement();
+G4ThreeVector detPlacement;
+
+  switch(LayoutOptions) { 
+    case 1:{ 
+    detPlacement = G4ThreeVector(61.0*cm, -126.0*cm, 0.*cm);
+    G4cout
+      << G4endl
+      << " Position (61.0,-126.0,0)cm"
+      << G4endl;           
+        break;} 
+    case 2:{ 
+    detPlacement = G4ThreeVector(35.8*cm, -135.4*cm, 0.*cm);
+    G4cout
+      << G4endl
+      << " Position (35.8,-135.4,0)cm"
+      << G4endl;           
+        break;} 
+    case 3:{ 
+    detPlacement = G4ThreeVector(-28.0*cm, -137.2*cm, 0.*cm);
+    G4cout
+      << G4endl
+      << " Position (-28,-137.2,0)cm"
+      << G4endl;           
+        break;} 
+    case 4:{ 
+    detPlacement = G4ThreeVector(-86.0*cm, -110.5*cm, 0.*cm);
+    G4cout
+      << G4endl
+      << " Position (-86,-110.5,0)cm"
+      << G4endl;           
+        break;}       
+    case 5:{ 
+    detPlacement = G4ThreeVector(-128.5*cm, -55.6*cm, 0.*cm);
+    G4cout
+      << G4endl
+      << " Position (-128.5,-55.6,0)cm"
+      << G4endl;           
+        break;} 
+    case 6:{ 
+    detPlacement = G4ThreeVector(-140.*cm, 0.*cm, 0.*cm);            
+    G4cout
+      << G4endl
+      << " Position (-140,0,0)cm"
+      << G4endl;           
+       break;}
+    default:
+      detPlacement = G4ThreeVector(0.*cm, -181.*cm, 0.*cm);
+    }
+
+
+
   G4VSolid* det_solid                = new G4Orb("det", 2.0*cm);
   G4LogicalVolume* det_logic         = new G4LogicalVolume(det_solid,Water,"det");
 
    //Placing the detector as a daughter volume of the shielding did not work for some reason!
-   new G4PVPlacement(0,setupPlacement,det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,detPlacement,det_logic, "det", logicWorld, false, 0,checkOverlaps);   
    // Set det as scoring volume
    fScoringVolume = det_logic;
 

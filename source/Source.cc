@@ -41,7 +41,16 @@ int main(int argc,char** argv)
   // Set mandatory initialization classes
   //
   // Detector construction
-  runManager->SetUserInitialization(new SourceDetectorConstruction());
+  G4int construction_option = 0; 
+  if(argc>=3){
+    construction_option = strtol(argv[2], NULL, 10);
+  }
+
+  G4cout
+     << G4endl
+     << "Construction option is set to " << construction_option;
+
+  runManager->SetUserInitialization(new SourceDetectorConstruction(construction_option));
 
   // Physics list
   G4PhysListFactory factory;

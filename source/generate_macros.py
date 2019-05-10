@@ -34,9 +34,9 @@ for i in range(n_rods):
 		n=int(n*ratio)
 	f.write(template.format(x,y,n))
 
-
-template="""/control/macroPath /home/mrogulji/geant/CylinderSource/build
+buildPATH = '/home/mrogulji/geant/CylinderSource/build'
+template="""/control/macroPath {0}
 /control/loop singleRun.mac runNumber 0 23 1"""
 fileName='loop.mac'
 f = open(fileName,"w")
-f.write(template)
+f.write(template.format(build))

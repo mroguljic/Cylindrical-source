@@ -11,15 +11,17 @@ class G4LogicalVolume;
 class SourceDetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    SourceDetectorConstruction();
+    SourceDetectorConstruction(G4int option);
     virtual ~SourceDetectorConstruction();
 
     virtual G4VPhysicalVolume* Construct();
     
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
-
+    void SetLayoutOptions(G4int options){ LayoutOptions = options; }
+    G4int GetLayoutOptions() const { return LayoutOptions; }
   protected:
     G4LogicalVolume*  fScoringVolume;
+    G4int LayoutOptions = 0;
 };
 
 #endif
