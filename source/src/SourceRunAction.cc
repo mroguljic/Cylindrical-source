@@ -51,6 +51,20 @@ SourceRunAction::SourceRunAction()
   // in SourceAnalysis.hh
   auto analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+  analysisManager->SetVerboseLevel(1);
+  analysisManager->SetNtupleMerging(true);
+    // Note: merging ntuples is available only with Root output
+
+  // Book histograms, ntuple
+  //
+  
+  // Creating ntuple
+  //
+  analysisManager->CreateNtuple("Edep", "Edep");
+  analysisManager->CreateNtupleDColumn("Edep");
+  analysisManager->FinishNtuple();
+
 }
 
 
@@ -68,6 +82,13 @@ void SourceRunAction::BeginOfRunAction(const G4Run*)
   // reset accumulables to their initial values
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Reset();
+  
+  auto analysisManager = G4AnalysisManager::Instance();
+
+  time_t now = time(0);
+  std::string timestamp = std::to_string(now);
+  G4String fileName = "Layout_"+timestamp+".root";
+  analysisManager->OpenFile(fileName);
 }
 
 
@@ -118,6 +139,10 @@ void SourceRunAction::EndOfRunAction(const G4Run* run)
      << G4BestUnit(dose,"Dose") << " rms = " << G4BestUnit(rmsDose,"Dose") << "mass = " << G4BestUnit(mass,"Mass")
      << G4endl
      << "------------------------------------------------------------";
+
+  auto analysisManager = G4AnalysisManager::Instance();
+  analysisManager->Write();
+  analysisManager->CloseFile();
 }
 
 

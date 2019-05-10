@@ -26,7 +26,12 @@ void SourceEventAction::BeginOfEventAction(const G4Event*)
 
 void SourceEventAction::EndOfEventAction(const G4Event*)
 {   
+  auto analysisManager = G4AnalysisManager::Instance();
 
   fRunAction->AddEdep(fEdep);
+  if(fEdep>0.){
+  analysisManager->FillNtupleDColumn(0, fEdep);
+  analysisManager->AddNtupleRow();
+  }
 }
 
