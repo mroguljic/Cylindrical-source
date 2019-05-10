@@ -8,34 +8,34 @@ cd /users/mrogul/Work/geant4.10.04-build/bin/
 source geant4.csh 
 cd {2}/{3}/water{1}
 echo $LD_LIBRARY_PATH
-{2}/Source {2}/loop{0}.mac {1} >& loop{0}.out
+{2}/Source {2}/rod{0}.mac {1} >& rod{0}.out
 """
 
-template_txt="""executable  =  loop{0}.csh
+template_txt="""executable  =  rod{0}.csh
 universe    =  vanilla
-log         =  loop{0}.logs
+log         =  rod{0}.log
 getenv      =  True
 queue
 """
-buildPATH = '/home/mrogulji/geant/CylinderSource/build'
-jobsDir   = 'jobsDir'
+buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/ChangingPhi/fromGit/withWalls/build'
+jobsDir   = '10.5.'
 
 for folderNumber in xrange(1,7):
-    if not os.path.exists('water'+str(folderNumber)):
-        os.makedirs('water'+str(folderNumber))
-	for i in xrange(12):
-		fileName='water'+str(folderNumber)+'/loop'+str(i)
+    if not os.path.exists(jobsDir+'/water'+str(folderNumber)):
+        os.makedirs(jobsDir+'/water'+str(folderNumber))
+	for i in xrange(24):
+		fileName='water'+str(folderNumber)+'/rod'+str(i)
 		
-		f_csh = open(fileName+".csh","w")
+		f_csh = open(jobsDir+"/"+fileName+".csh","w")
 		f_csh.write(template_csh.format(i,folderNumber,buildPATH,jobsDir))
 		f_csh.close()
 
-		f_txt = open(fileName+".txt","w")
+		f_txt = open(jobsDir+"/"+fileName+".txt","w")
 		f_txt.write(template_txt.format(i,folderNumber,buildPATH,jobsDir))
 		f_txt.close()
 
-os.system('chmod 777 water?/*sh')
-os.system('chmod 777 water1?/*sh')
+os.system('chmod 777 '+jobsDir+'/water?/*sh')
+os.system('chmod 777 '+jobsDir+'/water1?/*sh')
 
 
 """/run/initialize
