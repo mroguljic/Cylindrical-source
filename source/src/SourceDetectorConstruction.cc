@@ -96,7 +96,7 @@ G4VPhysicalVolume* SourceDetectorConstruction::Construct()
     G4ThreeVector guidesPos   = G4ThreeVector(x, y, guidesZ);
     G4ThreeVector fillingsPos = G4ThreeVector(x, y, 0*cm);
     G4ThreeVector vProtPos    = G4ThreeVector(x,y,hzFillings+vProthLength+1*mm);
-    new G4PVPlacement(0,guidesPos,padsLog,padName,logicWorld,false,0);
+    new G4PVPlacement(0,fillingsPos,padsLog,padName,logicWorld,false,0);
     new G4PVPlacement(0,guidesPos,guidesLog,guideName,logicWorld,false,0);
     new G4PVPlacement(0,fillingsPos,fillingsLog,fillingName,logicWorld,false,0);
     new G4PVPlacement(0,vProtPos,vProtLog,vProtName,logicWorld,false,0);
