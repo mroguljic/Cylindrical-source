@@ -18,7 +18,7 @@ getenv      =  True
 queue
 """
 buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/changingH_r100/recalc/build'
-jobsDir   = '10.5.'
+jobsDir   = '13.5.'
 
 for folderNumber in xrange(1,17):
     if not os.path.exists(jobsDir+'/water'+str(folderNumber)):

@@ -1,6 +1,6 @@
 totalDose = open('TotalDose.txt','w')
 
-jobsDirectory = '10.5.'
+jobsDirectory = '13.5.'
 
 for i in xrange(1,7):
 	fileName=jobsDirectory+'/water'+str(i)+'/AllRodsSummary.txt'
@@ -18,7 +18,7 @@ for i in xrange(1,7):
 	print '-----------'+fileName+'-----------'
 
 	#numberOfEventsPerRun=int(input('Enter the number of events per run (in millions):'))
-	numberOfEventsPerRun=1.148 #in millions, 2(active rod)+0.296(passive rod) / 2
+	numberOfEventsPerRun=0.0574 #in millions, 1(active rod)+0.148(passive rod) / 2
 	totalNumberOfPhotons=numberOfEventsPerRun*counter #in millions
 	print 'Total number of photons '+str(totalNumberOfPhotons)+'*10^6'
 	activity=2.59 #in PBq
