@@ -18,11 +18,11 @@ template="""/control/macroPath {3}
 /gps/ene/mono 1.3325 MeV
 /run/beamOn {2}"""
 
-buildPATH = '/home/mrogulji/geant/CylinderSource/build'
+buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/changingH_r100/recalc/build'
 
 
 n_rods=24
-n_phot=2000000
+n_phot=100000
 ratio=0.3409/2.3001 
 radius=13.0
 for i in range(n_rods):

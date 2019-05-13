@@ -8,11 +8,11 @@ EMax=1.5
 
 jobsDir = '10.5.'
 
-for i in xrange(1,7):
+for i in xrange(1,17):
 	#print i
 	folder=jobsDir+'/water'+str(i)
 	file=r.TFile.Open(folder+'/Total.root')
-	tree=file.Get('Edep')
+	tree=file.Get('ttree')
 
 	histogram = r.TH1F(folder,folder,nBins, EMin, EMax)
 
