@@ -8,13 +8,14 @@ EMax=1.5
 
 jobsDir = '13.5.'
 
-for i in xrange(1,7):
+for i in xrange(1,17):
 	#print i
 	folder=jobsDir+'/water'+str(i)
 	file=r.TFile.Open(folder+'/Total.root')
 	tree=file.Get('ttree')
+	name = 'randomName'+str(i) #just avoid duplicates because of ROOT
 
-	histogram = r.TH1F(folder,folder,nBins, EMin, EMax)
+	histogram = r.TH1F(name,name,nBins, EMin, EMax)
 
 	
 	#nEntries=tree.GetEntriesFast()
@@ -23,7 +24,7 @@ for i in xrange(1,7):
 	SumError=0.
 	SumEnergy=0.
 	
-	tree.Draw('Edep>>{0}'.format(folder))
+	tree.Draw('Edep>>{0}'.format(name))
 
 	for k in xrange(1,nBins+1):
 		E_k=histogram.GetBinCenter(k)
