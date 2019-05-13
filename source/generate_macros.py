@@ -22,7 +22,7 @@ buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/changingH_r50/recalc/buil
 
 
 n_rods=24
-n_phot=2000000
+n_phot=100000
 ratio=0.3409/2.3001 
 radius=13.0
 for i in range(n_rods):
