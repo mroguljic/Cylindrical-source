@@ -17,10 +17,10 @@ log         =  rod{0}.log
 getenv      =  True
 queue
 """
-buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/ChangingPhi/fromGit/withWalls/build'
-jobsDir   = '10.5.'
+buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/changingH_r50/recalc/build'
+jobsDir   = '13.5.'
 
-for folderNumber in xrange(1,7):
+for folderNumber in xrange(1,17):
     if not os.path.exists(jobsDir+'/water'+str(folderNumber)):
         os.makedirs(jobsDir+'/water'+str(folderNumber))
 	for i in xrange(24):

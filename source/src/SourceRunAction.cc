@@ -61,7 +61,7 @@ SourceRunAction::SourceRunAction()
   
   // Creating ntuple
   //
-  analysisManager->CreateNtuple("Edep", "Edep");
+  analysisManager->CreateNtuple("ttree", "ntuple");
   analysisManager->CreateNtupleDColumn("Edep");
   analysisManager->FinishNtuple();
 

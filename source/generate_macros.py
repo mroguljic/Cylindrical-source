@@ -18,7 +18,7 @@ template="""/control/macroPath {3}
 /gps/ene/mono 1.3325 MeV
 /run/beamOn {2}"""
 
-buildPATH = '/home/mrogulji/geant/CylinderSource/build'
+buildPATH = '/users/mrogul/Work/geant_sims/paperRecalc/changingH_r50/recalc/build'
 
 
 n_rods=24
