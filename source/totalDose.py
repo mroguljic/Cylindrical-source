@@ -2,7 +2,7 @@ totalDose = open('TotalDose.txt','w')
 
 jobsDirectory = '13.5.'
 
-for i in xrange(1,7):
+for i in xrange(1,17):
 	fileName=jobsDirectory+'/water'+str(i)+'/AllRodsSummary.txt'
 	f = open(fileName,'r')
 	doseSum=0. 	#doseSum should be in nanoGy
