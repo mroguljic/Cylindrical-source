@@ -186,119 +186,43 @@ G4VPhysicalVolume* SourceDetectorConstruction::Construct()
 
 G4ThreeVector detPlacement;
 
-  switch(LayoutOptions) { 
+ 
+ switch(LayoutOptions) { 
     case 1:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -62.*cm);
+    detPlacement = G4ThreeVector(.0*cm, -201*cm, 0.*cm);
     G4cout
       << G4endl
-      << " Position (-28.0,-137.17,-62)cm"
+      << " Position (0,-201,0)cm"
       << G4endl;           
         break;} 
     case 2:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -52.*cm);
+    detPlacement = G4ThreeVector(.0*cm, -226*cm, 0.*cm);
     G4cout
       << G4endl
-      << " Position (-28.0,-137.17,-52)cm"
+      << " Position (0,-226,0)cm"
       << G4endl;           
         break;}
     case 3:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -42.*cm);
+    detPlacement = G4ThreeVector(.0*cm, -307*cm, 0.*cm);
     G4cout
       << G4endl
-      << " Position (-28.0,-137.17,-42)cm"
+      << " Position (0,-307,0)cm"
       << G4endl;           
-        break;}
+        break;}  
     case 4:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -32.*cm);
+    detPlacement = G4ThreeVector(.0*cm, -151*cm, 0.*cm);
     G4cout
       << G4endl
-      << " Position (-28.0,-137.17,-32)cm"
+      << " Position (0,-151,0)cm"
       << G4endl;           
-        break;}        
+        break;}
     case 5:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -22.*cm);
+    detPlacement = G4ThreeVector(.0*cm, -181*cm, 0.*cm);
     G4cout
       << G4endl
-      << " Position (-28.0,-137.17,-22)cm"
+      << " Position (0,-181,0)cm"
       << G4endl;           
-        break;}
-    case 6:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -12.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,-12)cm"
-      << G4endl;           
-        break;}
-    case 7:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, -2.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,-2)cm"
-      << G4endl;           
-        break;}
-    case 8:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 8.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,8)cm"
-      << G4endl;           
-        break;}
-    case 9:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 18.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,18)cm"
-      << G4endl;           
-        break;}
-    case 10:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 28.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,28)cm"
-      << G4endl;           
-        break;}
-    case 11:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 38.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,38)cm"
-      << G4endl;           
-        break;}
-    case 12:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 48.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,48)cm"
-      << G4endl;           
-        break;}
-    case 13:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 58.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,58)cm"
-      << G4endl;           
-        break;}
-    case 14:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 68.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,68)cm"
-      << G4endl;           
-        break;}
-    case 15:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 78.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,78)cm"
-      << G4endl;           
-        break;}
-    case 16:{ 
-    detPlacement = G4ThreeVector(-28.0*cm, -137.17*cm, 88.*cm);
-    G4cout
-      << G4endl
-      << " Position (-28.0,-137.17,88)cm"
-      << G4endl;           
-        break;}
+        break;}  
     default:
       detPlacement = G4ThreeVector(0.*cm, -126.*cm, 0.*cm);
     }

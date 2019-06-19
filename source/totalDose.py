@@ -1,8 +1,8 @@
 totalDose = open('TotalDose.txt','w')
 
-jobsDirectory = '13.5.'
+jobsDirectory = '19.6.'
 
-for i in xrange(1,17):
+for i in xrange(1,6):
 	fileName=jobsDirectory+'/water'+str(i)+'/AllRodsSummary.txt'
 	f = open(fileName,'r')
 	doseSum=0. 	#doseSum should be in nanoGy
@@ -18,7 +18,7 @@ for i in xrange(1,17):
 	print '-----------'+fileName+'-----------'
 
 	#numberOfEventsPerRun=int(input('Enter the number of events per run (in millions):'))
-	numberOfEventsPerRun=0.0574 #in millions, 1(active rod)+0.148(passive rod) / 2
+	numberOfEventsPerRun=57.4 #in millions, 1(active rod)+0.148(passive rod) / 2
 	totalNumberOfPhotons=numberOfEventsPerRun*counter #in millions
 	print 'Total number of photons '+str(totalNumberOfPhotons)+'*10^6'
 	activity=2.59 #in PBq
