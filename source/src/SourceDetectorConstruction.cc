@@ -185,12 +185,16 @@ G4VPhysicalVolume* SourceDetectorConstruction::Construct()
 
 
   UserInput config;
-  G4ThreeVector setupPlacement       = config.GetSetupPlacement();
-  G4VSolid* det_solid                = new G4Orb("det", 2.0*cm);
+  G4VSolid* det_solid                = new G4Box("det",5.0*cm,5.0*cm,5.0*cm);
   G4LogicalVolume* det_logic         = new G4LogicalVolume(det_solid,Water,"det");
 
    //Placing the detector as a daughter volume of the shielding did not work for some reason!
-   new G4PVPlacement(0,setupPlacement,det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,config.GetSetupPlacement1(),det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,config.GetSetupPlacement2(),det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,config.GetSetupPlacement3(),det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,config.GetSetupPlacement4(),det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,config.GetSetupPlacement5(),det_logic, "det", logicWorld, false, 0,checkOverlaps);   
+   new G4PVPlacement(0,config.GetSetupPlacement6(),det_logic, "det", logicWorld, false, 0,checkOverlaps);   
    // Set det as scoring volume
    fScoringVolume = det_logic;
 

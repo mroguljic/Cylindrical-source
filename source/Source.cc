@@ -33,7 +33,8 @@ int main(int argc,char** argv)
   // Construct the default run manager
   //
 #ifdef G4MULTITHREADED
-  G4MTRunManager* runManager = new G4MTRunManager;
+  //G4MTRunManager* runManager = new G4MTRunManager;
+  G4RunManager* runManager = new G4RunManager;
 #else
   G4RunManager* runManager = new G4RunManager;
 #endif
